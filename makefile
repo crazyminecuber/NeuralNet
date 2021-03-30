@@ -43,12 +43,12 @@ CFLAGS= $(INC_FLAGS) -std=c++17 -g -Wall -Wextra -pedantic -fmax-errors=5
 
 
 # Compiles main target from all .o files.
-$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
+$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS) $(SRC_DIRS)/main.cc
 	@echo "hello $@"
 	@echo "objs $(OBJS)"
 	$(CCC) $(CFLAGS) $(OBJS) $(SRC_DIRS)/main.cc -o $@ $(LDFLAGS)
 
-run: $(BUILD_DIR)/$(TARGET_EXEC)
+run: $(BUILD_DIR)/$(TARGET_EXEC) $(OBJS)
 	./$(BUILD_DIR)/$(TARGET_EXEC)
 
 $(BUILD_DIR)/%.cc.o: %.cc | $(BUILD_DIR)

@@ -1,8 +1,10 @@
 #include <vector>
+#include <iostream>
 #include <deque>
 #include "network.h"
 #include <iterator>
 #include "Eigen/Dense"
+#include <tuple>
 
 using namespace std;
 using namespace Eigen;
@@ -17,14 +19,14 @@ VectorXf sigmoid_derivative(VectorXf z)
     return sigmoid(z).array()*(1 - sigmoid(z).array());
 }
 
-VectorXf cost(VectorXf output_activations, VectorXf a)
+VectorXf cost(VectorXf output_activations, VectorXf sol)
 {
-    return square((output_activations - a).array());
+    return square((output_activations - sol).array());
 }
 
-VectorXf cost_derivative(VectorXf output_activations, VectorXf a)
+VectorXf cost_derivative(VectorXf output_activations, VectorXf sol)
 {
-    return 2*(output_activations - a);
+    return 2*(output_activations - sol);
 }
 
 Network::Network(std::vector<int> layers) // Load from file somehow
@@ -34,20 +36,23 @@ Network::Network(std::vector<int> layers) // Load from file somehow
         weights.push_back(MatrixXf::Random(*layer,*prev(layer))); // Slumpad rad, kollumn. Indata avgör antal kolumner och utdata antal rader
         biass.push_back(VectorXf::Random(*layer));
     }
+    std::cout << "first weight matrix" << weights.front() << std::endl;
 }
 
 VectorXf Network::compute(VectorXf input)
 {
     auto b = biass.begin();
-    for (auto w = weights.begin(); w != weights.end(); ++w)
+    auto w = weights.begin();
+    for (;w != weights.end() && b != biass.end(); ++w, ++b)
     {
+        std::cout << "different length of input" << input.size() << std::endl;
         input = sigmoid(((*w) * input + (*b)));
-        ++b;
     }
+    std::cout << "different length of input" << input.size() << std::endl;
     return input;
 }
 
-void Network::train(VectorXf input, VectorXf solution)
+std::tuple<vector<MatrixXf>,vector<VectorXf>> Network::gradient(VectorXf input, VectorXf solution)
 {
     auto b = biass.begin();
     vector<VectorXf> Z{};
@@ -84,6 +89,10 @@ void Network::train(VectorXf input, VectorXf solution)
     {
         nabla_w.push_back((*e) * a->transpose());
     }
+
+    return  std::make_tuple(nabla_w, nabla_b);
+
+
 }
 
 
