@@ -114,8 +114,6 @@ TEST_CASE("Feedforward")
 
 TEST_CASE("Backprop")
 {
-    //Ide:
-    //
     MatrixXf w1(2,2);
     w1 << 1,1,
           1,1;
@@ -160,5 +158,15 @@ TEST_CASE("Backprop")
     std::cout << "nabla_w.front() = " << nabla_w.front() << std::endl;
     std::cout << "nabla_b.back() = " << nabla_b.back() << std::endl;
     std::cout << "nabla_w.back() = " << nabla_w.back() << std::endl;
+}
 
+TEST_CASE("Matrix test")
+{
+    Matrix2f a{};
+    Matrix2f b{};
+    a << 1,2,
+     3,4;
+    b = MatrixXf::Zero(b.rows(), b.cols());
+    CHECK(b.cols() == 2);
+    CHECK(b.rows() == 2);
 }

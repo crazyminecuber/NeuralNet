@@ -20,7 +20,9 @@ class Network
     //Network & operator=(Network && rhs);
 
     Eigen::VectorXf compute(Eigen::VectorXf input); //Fix längd från konstruktion
+    void train(std::vector<Eigen::VectorXf> input, std::vector<Eigen::VectorXf> solution, float learning_rate, unsigned int batchsize); //Fix längd från konstruktion
+    void update_mini_batch(std::vector<Eigen::VectorXf> input, std::vector<Eigen::VectorXf> solution, float learning_rate); //Fix längd från konstruktion
     std::tuple<std::vector<Eigen::MatrixXf>,std::vector<Eigen::VectorXf>> gradient(Eigen::VectorXf input, Eigen::VectorXf solution);
-    std::vector<Eigen::VectorXf> biass{}; //Fix längd från konstruktion
     std::vector<Eigen::MatrixXf> weights{}; // fix längd från konstruktion
+    std::vector<Eigen::VectorXf> biass{}; //Fix längd från konstruktion
 };
