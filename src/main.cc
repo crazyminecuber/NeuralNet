@@ -82,7 +82,7 @@ int main()
         VectorXf gurk(u.size());
         for(unsigned n{0}; n < u.size(); n++)
         {
-            gurk[n] = u[n];
+            gurk[n] = u[n] / 255.0f;
         }
         input.push_back(gurk);
     }
@@ -115,8 +115,8 @@ int main()
     }
 
     //Network with this type of layer
-    Network network{vector<int>{784,100,30,10}};
-    network.train(input, solution, 3, 10);
+    Network network{vector<int>{784,100,10}};
+    network.train(input, solution, 5, 20);
 
     for(unsigned i{0}; i < t_input.size(); i++)
     {
