@@ -38,13 +38,21 @@ Network::Network(std::vector<int> layers) // Load from file somehow
     }
 }
 
-VectorXf Network::compute(VectorXf input)
+VectorXf Network::compute(VectorXf input, bool guess)
 {
     auto b = biass.begin();
     auto w = weights.begin();
     for (;w != weights.end() && b != biass.end(); ++w, ++b)
     {
         input = sigmoid(((*w) * input + (*b)));
+    }
+    if(guess)
+    {
+        float max = input.maxCoeff();
+        for(unsigned i{0}; i < input.size(); i++)
+        {
+            input[i] = input[i] == max ? 1 : 0;
+        }
     }
     return input;
 }
@@ -116,6 +124,7 @@ void Network::update_mini_batch(std::vector<Eigen::VectorXf> input, std::vector<
     vector<MatrixXf> nabla_w{};
     vector<VectorXf> del_nabla_b{};
     vector<MatrixXf> del_nabla_w{};
+    vector<VectorXf> guess{};
 
     for(unsigned int n{0}; n < weights.size(); n++)
     {
@@ -130,6 +139,7 @@ void Network::update_mini_batch(std::vector<Eigen::VectorXf> input, std::vector<
     auto s = solution.begin();
     for (; i != input.end() && s !=solution.end(); ++i, ++s)
     {
+        guess.push_back(compute(*i, true));
         tie(del_nabla_w, del_nabla_b) = gradient(*i,*s);
         for(unsigned n{0}; n < nabla_w.size(); n++)
         {
@@ -144,13 +154,23 @@ void Network::update_mini_batch(std::vector<Eigen::VectorXf> input, std::vector<
 
     for(unsigned n{0}; n < weights.size(); n++)
     {
+      //  cout << "First weights before: " << weights.front() << endl;
         weights[n] -= (learning_rate / input.size()) * del_nabla_w[n];
+       // cout << "First weights after: " << weights.front() << endl;
     }
 
     for(unsigned n{0}; n < biass.size(); n++)
     {
         biass[n] -= (learning_rate / input.size()) * del_nabla_b[n];
     }
+
+    int correct{0};
+    for(unsigned i{0}; i < solution.size(); i++)
+    {
+       correct += guess[i] == solution[i] ? 1 : 0;
+    }
+
+    cout << "Correct in minibatch: " << correct << "/" << input.size() << endl;
 
 }
 // Nu vill jag börja skriva kod för att kunna ladda data och träna en modell på
