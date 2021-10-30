@@ -33,7 +33,7 @@ Network::Network(std::vector<int> layers) // Load from file somehow
 {
     for (auto layer = ++layers.begin(); layer != layers.end(); ++layer)
     {
-        weights.push_back(MatrixXf::Random(*layer,*prev(layer))); // Slumpad rad, kollumn. Indata avgör antal kolumner och utdata antal rader
+        weights.push_back(MatrixXf::Random(*layer,*prev(layer)));
         biass.push_back(VectorXf::Random(*layer));
     }
 }
@@ -105,14 +105,14 @@ void Network::train(std::vector<Eigen::VectorXf> input, std::vector<Eigen::Vecto
     {
         update_mini_batch(
         std::vector<Eigen::VectorXf>(input.begin() + index,input.begin() + index + batchsize),
-        std::vector<Eigen::VectorXf>(solution.begin() + index, solution.begin() + index + batchsize), // Dubbelräknas ändpunkterna?
+        std::vector<Eigen::VectorXf>(solution.begin() + index, solution.begin() + index + batchsize),
         learning_rate
         );
         index += batchsize;
         cout << "epoc " << index / batchsize  << "done.";
     }
     update_mini_batch(
-    std::vector<Eigen::VectorXf>(input.begin() + index,input.end()), // blir detta rätt?
+    std::vector<Eigen::VectorXf>(input.begin() + index,input.end()),
     std::vector<Eigen::VectorXf>(solution.begin() + index, solution.end()),
     learning_rate
     );
@@ -173,13 +173,3 @@ void Network::update_mini_batch(std::vector<Eigen::VectorXf> input, std::vector<
     cout << "Correct in minibatch: " << correct << "/" << input.size() << endl;
 
 }
-// Nu vill jag börja skriva kod för att kunna ladda data och träna en modell på
-// något sätt. Börja med ett nätverk som skall outputa det som är störst. av två
-// tal. 2-2-2 struktur kör vi med. Då vill vi ha data. Det kan jag generera
-// automatiskt i detta fallet. Sedan vill jag bestämma hur många data jag ska
-// träna med och hur stora batcher jag ska köra med och hur jag genomsnittar dem
-// till ett totalt steg och hur jag gör i gränsfallet att vi har färra samples
-// kvar än en batch.
-//
-// Funktion träna tar in data, batchstorlek och learningrate. Returnerar inget
-// men ändrar vikterna internt.

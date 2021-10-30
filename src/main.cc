@@ -11,8 +11,7 @@
 using namespace std;
 using namespace Eigen;
 
-//returnera slumpat par av en vector med slumpade tal och en vector som visar
-//rätt tal.
+//return pair of random number and correct classification vector.
 std::tuple<Eigen::Vector2f, Eigen::Vector2f> datapoint()
 {
     Vector2f x = Vector2f::Random();
@@ -47,36 +46,11 @@ int main()
     vector<VectorXf> t_output{};
     vector<VectorXf> input{};
     vector<VectorXf> solution{};
-/*
-    VectorXf xfgas(1);
-    VectorXf xfgas2(10);
-    xfgas << 1.8;
-    xfgas2 << 0,0,0,1,0,0,0,0,0,0;
-    vector<VectorXf> input(10000, VectorXf(xfgas));
-    vector<VectorXf> solution(10000,VectorXf(xfgas2));
-    */
-
-    /*
-    for(int i{0}; i < n_train; i++)
-    {
-        tie(tmp_input, tmp_sol) = datapoint();
-        input.push_back(tmp_input);
-        solution.push_back(tmp_sol);
-    }
-
-
-    for(unsigned i{0}; i < n_test; i++)
-    {
-        tie(tmp_input, tmp_sol) = datapoint();
-        t_input.push_back(tmp_input);
-        t_solution.push_back(tmp_sol);
-    }
-    */
 
 
     mnist::MNIST_dataset<std::vector, std::vector<float>, u_int8_t> dataset =
         mnist::read_dataset<std::vector, std::vector, float, uint8_t>(".");
-    //Konvertera till vector<VectorXf>
+    //Convert to vector<VectorXf>
     for(vector<float> u: dataset.training_images)
     {
         VectorXf gurk(u.size());
@@ -123,7 +97,7 @@ int main()
         t_output.push_back(network.compute(t_input[i], true));
     }
 
-    int n_correct{0};// Hur mäter vi det här igentligen? Någon form av avstånd?
+    int n_correct{0};
 
     for(unsigned i{0}; i < t_output.size(); i++)
     {
@@ -132,12 +106,7 @@ int main()
             n_correct++;
         }
     }
-cout << "antal korrekta : " << n_correct << " / " << t_output.size() << "." << endl;
-    // genera data
-    // träna
-    // generera testdata
-    // beräkna testdata
-    // utvärdera testdata
+cout << "Number of correct : " << n_correct << " / " << t_output.size() << "." << endl;
 
 }
 

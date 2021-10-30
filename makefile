@@ -3,9 +3,9 @@
 #MAKEFLAGS += --warn-undefined-variables # NOT working for some reason
 #MAKEFLAGS+=--no-builtin-rules# Removes the magic predefined rules.
 
-ifeq ($(origin .RECIPEPREFIX), undefined)
-  $(error This Make does not support .RECIPEPREFIX. Please use GNU Make 4.0 or later)
-endif
+#ifeq ($(origin .RECIPEPREFIX), undefined)
+#  $(error This Make does not support .RECIPEPREFIX. Please use GNU Make 4.0 or later)
+#endif
 
 TARGET_EXEC = main
 BUILD_DIR = .build
